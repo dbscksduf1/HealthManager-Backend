@@ -3,6 +3,7 @@ package com.example.health.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -20,10 +21,13 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:5173")
+                        .allowedOrigins(
+                                "*",
+                                "http://localhost:5173"
+                        )
                         .allowedMethods("*")
                         .allowedHeaders("*")
-                        .allowCredentials(true);
+                        .allowCredentials(false);
             }
         };
     }
@@ -34,7 +38,10 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> {})
+
+
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
 
                         .requestMatchers(
@@ -42,12 +49,14 @@ public class SecurityConfig {
                                 "/user/create",
                                 "/health/status",
                                 "/user/me",
-                                "user/update/**"
+                                "/user/update/**"
                         ).permitAll()
 
 
                         .anyRequest().authenticated()
                 )
+
+
                 .formLogin(login -> login.disable())
                 .logout(logout -> logout.disable());
 
