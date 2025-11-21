@@ -20,14 +20,16 @@ public class SecurityConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
+
                 registry.addMapping("/**")
                         .allowedOrigins(
-                                "*",
-                                "http://localhost:5173"
+                                "http://localhost:5173",
+                                "https://healthmanager-backend.onrender.com",
+                                "https://healthmanager-frontend.onrender.com"
                         )
                         .allowedMethods("*")
                         .allowedHeaders("*")
-                        .allowCredentials(false);
+                        .allowCredentials(true);
             }
         };
     }
@@ -39,10 +41,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> {})
 
-
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-
 
                         .requestMatchers(
                                 "/user/login",
@@ -52,10 +52,8 @@ public class SecurityConfig {
                                 "/user/update/**"
                         ).permitAll()
 
-
                         .anyRequest().authenticated()
                 )
-
 
                 .formLogin(login -> login.disable())
                 .logout(logout -> logout.disable());
