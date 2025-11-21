@@ -7,6 +7,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -14,6 +15,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private final JwtFilter jwtFilter;  // 🔥 추가
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
@@ -24,6 +27,7 @@ public class SecurityConfig {
                 registry.addMapping("/**")
                         .allowedOrigins(
                                 "http://localhost:5173",
+                                "http://localhost:3000",
                                 "https://healthmanager-backend.onrender.com",
                                 "https://healthmanager-frontend.onrender.com"
                         )
@@ -41,17 +45,16 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> {})
 
+                // 🔥 JwtFilter 등록 (가장 중요)
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-
                         .requestMatchers(
                                 "/user/login",
                                 "/user/create",
-                                "/health/status",
-                                "/user/me",
-                                "/user/update/**"
+                                "/health/status"
                         ).permitAll()
-
                         .anyRequest().authenticated()
                 )
 
