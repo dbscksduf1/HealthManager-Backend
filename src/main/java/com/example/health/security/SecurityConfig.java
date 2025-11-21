@@ -29,7 +29,7 @@ public class SecurityConfig {
                                 "http://localhost:5173",
                                 "http://localhost:3000",
                                 "https://healthmanager-backend.onrender.com",
-                                "https://healthmanager-frontend.onrender.com"
+                                "https://health-manager-frontend-henna.vercel.app"
                         )
                         .allowedMethods("*")
                         .allowedHeaders("*")
